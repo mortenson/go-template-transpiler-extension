@@ -1,5 +1,7 @@
 # go-template-transpiler-extension
 
+![A screenshot showing the deeply nested hover support provided by the extension](./screenshot.png)
+
 A vscode extension that provides autocompletion, highlighting, and definition (click through) support to Go templates via transpiling them to a temporary Go file and running `gopls` on that.
 
 ## Installation
@@ -30,9 +32,11 @@ This prevents the standard Go extension from running on top of this one.
 3. Run `npm install`
 4. Run `npm run install-extension`
 
-## Known bugs
+## Known bugs or unsupported features
 
 - Go to definition doesn't work for dollar sign prefixed variables, ex: `$foo`. You can still click the right hand side of the range definition though.
+- Tracking of variable assignments outside of a range tag, ex `{{ $foo := $bar }}`
+- Template function support (seems possible though?)
 
 ## About
 

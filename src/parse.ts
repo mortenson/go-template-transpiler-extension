@@ -21,7 +21,7 @@ export const AUTOCOMPLETE_REGEX = /{{-?[^}]*\s([^\s}]*)\./g;
 // Matches as many non-whitespace characters before the hovered character as possible, without going past {{
 const HOVER_BEFORE_REGEX = /{{-?[^}]*\s([^\s}]*)$/;
 
-// ([a-zA-Z0-9\$]+) - 
+// ([a-zA-Z0-9\$]+) - Alphanumeric plus $
 // Matches as many alphanumeric characters on/after the hovered character as possible
 const HOVER_AFTER_REGEX = /^([a-zA-Z0-9$]+)/;
 

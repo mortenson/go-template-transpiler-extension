@@ -1,0 +1,56 @@
+{
+	"name": "go-template-transpiler-extension",
+	"displayName": "Go Template Support via Transpiling",
+	"description": "Provides autocompletion, highlighting, and definition (click through) support to Go templates via transpiling them to Go.",
+	"icon": "ext_logo.png",
+	"version": "0.0.1",
+	"publisher": "mortenson",
+	"private": true,
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mortenson/go-template-transpiler-extension"
+	},
+	"engines": {
+		"vscode": "^1.73.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:gotmpl_hack"
+	],
+	"main": "./out/extension.js",
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint \"src/**/*.ts\"",
+		"lint-fix": "eslint --fix \"src/**/*.ts\"",
+		"package": "vsce package --allow-star-activation --skip-license --out go-template-transpiler-extension.vsix",
+		"install-extension": "npm run package && code --install-extension ./go-template-transpiler-extension.vsix",
+		"publish-extension": "npm run package && vsce publish"
+	},
+	"devDependencies": {
+		"@types/node": "^18",
+		"@types/tmp": "^0.2.6",
+		"@types/vscode": "^1.73.0",
+		"@typescript-eslint/eslint-plugin": "^6.7.0",
+		"@typescript-eslint/parser": "^6.7.0",
+		"@vscode/vsce": "^2.27.0",
+		"eslint": "^8.26.0",
+		"typescript": "^5.4.2"
+	},
+	"contributes": {
+		"languages": [
+			{
+				"id": "gotmpl_hack",
+				"extensions": [
+					".gtpl"
+				]
+			}
+		]
+	},
+	"dependencies": {
+		"tmp": "^0.2.3"
+	}
+}

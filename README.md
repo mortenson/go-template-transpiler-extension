@@ -44,7 +44,7 @@ I was getting kind of frustrated with `gopls`'s support of Go templates, and was
 
 After an attempt at contributing to `gopls`, I decided that it might be easier to just minimally transpile go templates into Go code then ask vscode (and in turn `gopls`) for autocompletion, highlights, and definitions. Since Go support will probably always be better than Go template support, this seems like a good bet.
 
-The transpiler, if you can call it, mostly converts ranges into for loops so that variable provenance can be tracked correctly even in deep nesting levels. So a template like this:
+The transpiler, if you can call it that, mostly converts ranges into for loops so that variable provenance can be tracked correctly even in deep nesting levels. So a template like this:
 
 ```gotmpl
 {{- /*gotype: github.com/owner/repo/src/foo.FooWithBars */ -}}

@@ -37,6 +37,7 @@ const HOVER_AFTER_REGEX = /^([a-zA-Z0-9$]+)/;
 // the right hand side, ex: '{{ range $foo := .Bar }}' would result in ['range', '$foo := .Bar']
 const GO_TEMPLATE_TAG_REGEX = /{{-?\s*([^\s}]*)\s*([^}]*)\s*-?}}/g;
 
+// Replaces leading dots in a path with the current scope. Specifically useful for usages of `range` without `:=`
 const replaceVarWithScope = (replaceVar: string, scopeVarStack: string[]) => {
   if (replaceVar === '.') {
     return scopeVarStack[scopeVarStack.length - 1];
@@ -45,6 +46,7 @@ const replaceVarWithScope = (replaceVar: string, scopeVarStack: string[]) => {
   }
 };
 
+// Transpiles minimal valid Go code from a Go template so that the given `currentPath` can be checked.
 export const assembleGoCode = (docText: string, pathPosition: vscode.Position, packageName: string, typeName: string, currentPath: string) => {
   // The depth is used for cosmetic purposes (how many tabs to add), and to determine when "global" scope should be changed.
   let depth = 0;
@@ -143,7 +145,7 @@ ${suffixCode.join('\n')}
   };
 };
 
-// 
+// Like assembleGoCode, but handles determining the `currentPath` based on a single hovered character.
 export const assembleGoCodeForHover = (document: vscode.TextDocument, position: vscode.Position) => {
   const docText = document.getText();
   const matches = docText.match(GOTYPE_REGEX);
@@ -154,7 +156,7 @@ export const assembleGoCodeForHover = (document: vscode.TextDocument, position: 
 
   const line = document.lineAt(position).text;
   let currentPath = '';
-  // Special case - hovering gotype line, probably I guess
+  // Special case - hovering gotype line
   let offset = 0;
   if (line.slice(0, position.character).match(GOTYPE_REGEX)) {
     currentPath = `${typeName}{}`;

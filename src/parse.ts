@@ -137,7 +137,6 @@ ${prefixCodeStr}
 ${codeLine}
 ${suffixCode.join('\n')}
 }`;
-  console.log(fileContent);
   return {
     fileContent: fileContent,
     currentPathPosition: new vscode.Position(5 + (prefixCodeStr.match(/\n/g)||[]).length + 1, codeLine.length),

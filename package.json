@@ -48,6 +48,13 @@
           ".gtpl"
         ]
       }
+    ],
+    "grammars": [
+      {
+        "language": "gotmpl_hack",
+        "scopeName": "text.html.gotmpl_hack",
+        "path": "./syntaxes/gotmpl_hack.json"
+      }
     ]
   },
   "dependencies": {

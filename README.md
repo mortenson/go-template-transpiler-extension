@@ -4,6 +4,8 @@
 
 A vscode extension that provides autocompletion, highlighting, and definition (click through) support to Go templates via transpiling them to a temporary Go file and running `gopls` on that.
 
+Also, mostly because this is a project for my personal use, it also includes syntax highlighting copied from https://github.com/jinliming2/vscode-go-template
+
 ## Installation
 
 Search for `go-template-transpiler-extension` or `Go Template Support via Transpiling` on the marketplace and install the last published version there.

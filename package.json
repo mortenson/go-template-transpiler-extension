@@ -28,7 +28,7 @@
     "lint-fix": "eslint --fix \"src/**/*.ts\"",
     "package": "vsce package --allow-star-activation --skip-license --out go-template-transpiler-extension.vsix",
     "install-extension": "npm run package && code --install-extension ./go-template-transpiler-extension.vsix",
-    "publish-extension": "npm run package && vsce publish"
+    "publish-extension": "npm run package && vsce publish minor"
   },
   "devDependencies": {
     "@types/node": "^18",

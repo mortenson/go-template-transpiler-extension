@@ -3,7 +3,7 @@
   "displayName": "Go Template Support via Transpiling",
   "description": "Provides autocompletion, highlighting, and definition (click through) support to Go templates via transpiling them to Go.",
   "icon": "ext_logo.png",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "publisher": "mortenson",
   "private": true,
   "license": "MIT",

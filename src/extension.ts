@@ -65,7 +65,7 @@ export async function activate(context: vscode.ExtensionContext) {
         if (!linePrefixMatches) {
           return;
         }
-        const [, currentPath] = linePrefixMatches[linePrefixMatches.length - 1];
+        const currentPath = linePrefixMatches.length ? linePrefixMatches[linePrefixMatches.length - 1][1] : '';
         const goCode = assembleGoCode(docText, position, packageName, typeName, currentPath);
         const tmpFile = tmp.fileSync({ postfix: '.go' });
         fs.writeFileSync(tmpFile.name, goCode.fileContent);

@@ -38,9 +38,19 @@ const HOVER_AFTER_REGEX = /^([a-zA-Z0-9$]+)/;
 const GO_TEMPLATE_TAG_REGEX = /{{-?\s*([^\s}]*)\s*([^}]*)\s*-?}}/g;
 
 // Replaces leading dots in a path with the current scope. Specifically useful for usages of `range` without `:=`
+// Also handles $ which always refers to the root scope (first item in stack)
 const replaceVarWithScope = (replaceVar: string, scopeVarStack: string[]) => {
   if (replaceVar === '.') {
     return scopeVarStack[scopeVarStack.length - 1];
+  } else if (replaceVar === '$' || replaceVar.startsWith('$.')) {
+    // $ always refers to the root scope
+    const rootScope = scopeVarStack[0];
+    if (replaceVar === '$') {
+      return rootScope;
+    } else {
+      // $.Field -> (Type{}).Field
+      return replaceVar.replace(/^\$\./, rootScope + '.');
+    }
   } else {
     return replaceVar.replace(/^\./, scopeVarStack[scopeVarStack.length - 1] + '.');
   }
@@ -50,6 +60,8 @@ const replaceVarWithScope = (replaceVar: string, scopeVarStack: string[]) => {
 export const assembleGoCode = (docText: string, pathPosition: vscode.Position, packageName: string, typeName: string, currentPath: string) => {
   // The depth is used for cosmetic purposes (how many tabs to add), and to determine when "global" scope should be changed.
   let depth = 0;
+  // Counter per depth level to avoid variable name collisions
+  const depthCounters: { [depth: number]: number } = {};
   // The scope stack tracks the current meaning of leading dots within ranges.
   // Personally I just tend not to use range without := but this is nice to have.
   let scopeVarStack: string[] = [`(${typeName}{})`];
@@ -72,7 +84,8 @@ export const assembleGoCode = (docText: string, pathPosition: vscode.Position, p
         case 'range':
           depth++;
           if (parts.length === 1) {
-            const scopeVar = `depth_${depth}`;
+            depthCounters[depth] = (depthCounters[depth] || 0) + 1;
+            const scopeVar = `depth_${depth}_${depthCounters[depth]}`;
             lastScopeChangeAtDepth = depth;
             prefixCode.push(`${tabs}for _, ${scopeVar} := range ${replaceVarWithScope(parts[0], scopeVarStack)} {`);
             scopeVarStack.push(scopeVar);
@@ -82,9 +95,22 @@ export const assembleGoCode = (docText: string, pathPosition: vscode.Position, p
             prefixCode.push(`${tabs}for ${parts[0]} ${parts[1]} := range ${replaceVarWithScope(parts[3], scopeVarStack)} {`);
           }
           break;
+        case 'with':
+          depth++;
+          if (parts.length >= 1) {
+            depthCounters[depth] = (depthCounters[depth] || 0) + 1;
+            const scopeVar = `depth_${depth}_${depthCounters[depth]}`;
+            lastScopeChangeAtDepth = depth;
+            // with shifts the context to the result of evaluating its argument
+            prefixCode.push(`${tabs}${scopeVar} := ${replaceVarWithScope(parts[0], scopeVarStack)}`);
+            prefixCode.push(`${tabs}if (true) {`);
+            scopeVarStack.push(scopeVar);
+          } else {
+            prefixCode.push(`${tabs}if (true) {`);
+          }
+          break;
         case 'if':
         case 'block':
-        case 'with':
         case 'define':
           depth++;
           // Seems stupid, but without these loose opening tags I could end up with incorrect nesting levels due to {{ end }}
@@ -120,9 +146,9 @@ export const assembleGoCode = (docText: string, pathPosition: vscode.Position, p
   if (currentPath === '') {
     rhs = `${scopeVarStack.pop()}`;
   } else if (currentPath === '$') {
-    rhs = `${typeName}{}`;
+    rhs = `(${typeName}{})`;
   } else if (currentPath.slice(0, 2) === '$.') {
-    rhs = `${typeName}{}.` + currentPath.slice(2);
+    rhs = `(${typeName}{}).` + currentPath.slice(2);
   } else if (currentPath[0] === '.') {
     rhs = `${scopeVarStack.pop()}${currentPath}`;
   } else {

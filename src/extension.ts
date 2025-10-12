@@ -74,7 +74,10 @@ export async function activate(context: vscode.ExtensionContext) {
         const retVal: vscode.CompletionItem[] = [];
         results.items.forEach(item => {
           if (item.kind === vscode.CompletionItemKind.Field) {
-            retVal.push(new vscode.CompletionItem(item.label, item.kind));
+            const completionItem = new vscode.CompletionItem(item.label, item.kind);
+            completionItem.documentation = item.documentation;
+            completionItem.detail = item.detail;
+            retVal.push(completionItem);
           }
         });
         return retVal;

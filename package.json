@@ -20,10 +20,17 @@
   "activationEvents": [
     "onLanguage:gotmpl_hack"
   ],
+  "extensionDependencies": [
+    "golang.Go"
+  ],
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
+    "test": "npm run compile && mocha",
+    "test:unit": "npm run compile && mocha out/test/unit/**/*.test.js",
+    "test:integration": "npm run compile && mocha out/test/integration/**/*.test.js",
+    "test:vscode": "npm run compile && vscode-test",
     "lint": "eslint \"src/**/*.ts\"",
     "lint-fix": "eslint --fix \"src/**/*.ts\"",
     "package": "vsce package --allow-star-activation --skip-license --out go-template-transpiler-extension.vsix",
@@ -31,13 +38,18 @@
     "publish-extension": "npm run package && vsce publish"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
     "@types/node": "^18",
     "@types/tmp": "^0.2.6",
     "@types/vscode": "^1.73.0",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^2.27.0",
     "eslint": "^8.26.0",
+    "glob": "^11.0.3",
+    "mocha": "^11.7.4",
     "typescript": "^5.4.2"
   },
   "contributes": {
